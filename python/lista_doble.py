@@ -79,7 +79,10 @@ class ListaDoble:
     def __reversed__(self):                      # reversed(l)
         # Coste de cada paso: O(?)   Recorrido completo: O(?)
         # TODO: igual que __iter__ pero empezando por la cola y yendo hacia atras.
-        raise NotImplementedError
+        actual = self.cola
+        while actual.anterior != None:
+            yield actual.dato
+            actual = actual.anterior
 
     def buscar(self, dato):
         # O(n). Devuelve el PRIMER nodo cuyo dato es 'dato', o None si no esta.
@@ -144,7 +147,7 @@ class ListaDoble:
             
 
     def insert_after(self, nodo, dato):
-        # Coste: O(?)
+        # Coste: O(1)
         # pre: nodo es un nodo de ESTA lista.
         # TODO: caso especial -> nodo es la cola (usa insert_last).
         nuevo = NodoDoble(dato)
@@ -164,25 +167,45 @@ class ListaDoble:
     # --- Borrado ------------------------------------------------------------
 
     def delete_node(self, nodo):
-        # Coste: O(?)
+        # Coste: O(1)
         # pre : nodo es un nodo de ESTA lista.
         # post: devuelve nodo.dato y deja nodo.anterior y nodo.siguiente a None.
         # TODO: reconectar el enlace izquierdo (o mover cabeza si nodo era la cabeza)
-        # TODO: reconectar el enlace derecho (o mover cola si nodo era la cola)
-        # TODO: actualizar tamano
-        raise NotImplementedError
+        if nodo.anterior is not None:
+            nodo.anterior.siguiente = nodo.siguiente
+        else: 
+            self.cabeza = nodo.siguiente
 
+
+        # TODO: reconectar el enlace derecho (o mover cola si nodo era la cola)
+        if nodo.siguiente is not None:
+            nodo.siguiente.anterior = nodo.anterior
+        else:
+            self.cola = nodo.anterior
+        nodo.anterior=nodo.siguiente=None
+        # TODO: actualizar tamano
+        self.tamano-=1
+
+        return nodo.dato
+    
     def delete_first(self):
         # Coste: O(?)
         # Si la lista esta vacia: raise IndexError("..."), como list.pop().
         # Devuelve el dato borrado. Pista: es un caso particular de delete_node.
-        raise NotImplementedError
-
+        if self.cabeza == None:
+            raise IndexError("delete_first on empty list")
+        else: return self.delete_node(self.cabeza)
+        
+            
+        
+        
     def delete_last(self):
         # Coste: O(?)
         # Si la lista esta vacia: raise IndexError("..."), como list.pop().
-        raise NotImplementedError
 
+        if self.cola == None: raise IndexError("delete_last on empty list")
+        else: return self.delete_node(self.cola)
+    
     # --- Palindromo ---------------------------------------------------------
 
     def es_palindromo(self):
