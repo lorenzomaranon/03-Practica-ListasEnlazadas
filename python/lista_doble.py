@@ -115,21 +115,51 @@ class ListaDoble:
         return nuevo
 
     def insert_last(self, dato):
-        # Coste: O(?)
+        # Coste: O(1)
         # TODO: simetrico a insert_first, trabajando sobre la cola.
-        raise NotImplementedError
+        nuevo = NodoDoble(dato)
+        if self.cabeza is None:
+            self.cabeza = self.cola = nuevo
+        else:
+            nuevo.anterior = self.cola
+            self.cola.siguiente = nuevo
+            self.cola = nuevo
+        self.tamano += 1
+        return nuevo
 
     def insert_before(self, nodo, dato):
         # Coste: O(?)
         # pre: nodo es un nodo de ESTA lista.
         # TODO: caso especial -> nodo es la cabeza (usa insert_first).
-        raise NotImplementedError
+        nuevo = NodoDoble(dato)
+        if nodo is self.cabeza:
+            self.insert_first(dato)
+        else:
+            nuevo.siguiente = nodo
+            nuevo.anterior = nodo.anterior
+            nodo.anterior.siguiente = nuevo
+            nodo.anterior = nuevo
+        self.tamano =+ 1
+        return nuevo
+            
 
     def insert_after(self, nodo, dato):
         # Coste: O(?)
         # pre: nodo es un nodo de ESTA lista.
         # TODO: caso especial -> nodo es la cola (usa insert_last).
-        raise NotImplementedError
+        nuevo = NodoDoble(dato)
+        if nodo is self.cola:
+            self.cola.siguiente = nuevo
+            nuevo.anterior = self.cola
+            self.cola = nuevo
+        else:
+            nuevo.anterior = nodo
+            nuevo.siguiente = nodo.siguiente
+            nodo.siguiente = nuevo
+            nodo.siguiente.anterior = nuevo
+        self.tamano += 1
+        return nuevo
+
 
     # --- Borrado ------------------------------------------------------------
 
@@ -156,10 +186,17 @@ class ListaDoble:
     # --- Palindromo ---------------------------------------------------------
 
     def es_palindromo(self):
-        # Coste: O(?) en tiempo y O(?) en memoria auxiliar.
+        # Coste: O("n//2") -> O(n) en tiempo y O("2") -> O(1) en memoria auxiliar.
         # TODO: dos punteros, inicio = self.cabeza y fin = self.cola, que
         #       avanzan hacia el centro. Bastan tamano // 2 comparaciones.
-        raise NotImplementedError
+        i = self.cabeza
+        j = self.cola
+
+        for _ in range(self.tamano // 2):
+            if i.dato != j.dato:
+                return False
+            i,j=i.siguiente , j.anterior
+        return True
 
     # --- Ampliacion (opcional, no puntua) -------------------------------------
 
